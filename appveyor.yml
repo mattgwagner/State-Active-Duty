@@ -1,0 +1,33 @@
+version: 1.0.{build}
+
+skip_branch_with_pr: true
+
+image: Visual Studio 2017
+
+before_build:
+- ps: dotnet restore
+
+build:
+  publish_wap: true
+  verbosity: minimal
+
+after_build:
+- ps: .\Test.ps1 -Configuration Release
+- ps: .\Package.ps1 -Configuration Release
+
+test: off
+
+artifacts:
+- path: StateActiveDuty.Web.zip
+  type: WebDeployPackage
+
+deploy:
+- provider: WebDeploy
+  server: https://state-active-duty.scm.azurewebsites.net/msdeploy.axd?site=State-Active-Duty
+  website: State-Active-Duty
+  username: $State-Active-Duty
+  password:
+    secure: JXt7ilTf1Jnghu7FirHi5yE1HqVtCya6TjFOWmDVt2jwymyOHcFRx/sSsbgsxaN0Q/jprb3qYi1V7BdKLpM2Fw==
+  aspnet_core: true
+  app_offline: true
+  aspnet_core_force_restart: true
