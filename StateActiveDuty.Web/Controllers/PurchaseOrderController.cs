@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StateActiveDuty.Web.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StateActiveDuty.Web.Controllers
@@ -27,16 +28,24 @@ namespace StateActiveDuty.Web.Controllers
         {
             ViewBag.Message = message;
 
-            return View(await db.PurchaseOrders.FindAsync(id));
+            return View(await Get(id));
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> New()
         {
-            var model = new PurchaseOrder { };
+            return await Edit();
+        }
+
+        public async Task<IActionResult> Edit(int? id = null)
+        {
+            var model = new PurchaseOrderEditModel
+            {
+                // TODO Load units for select list
+            };
 
             if (id > 0)
             {
-                model = await db.PurchaseOrders.FindAsync(id);
+                model.Order = await Get(id.Value);
             }
 
             return View(model);
@@ -62,7 +71,7 @@ namespace StateActiveDuty.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(dynamic model)
         {
-            var order = await db.PurchaseOrders.FindAsync(model.Id);
+            var order = await Get(model.Id);
 
             // Update the order events as appropriate
 
@@ -74,7 +83,7 @@ namespace StateActiveDuty.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(int id)
         {
-            var order = await db.PurchaseOrders.FindAsync(id);
+            var order = await Get(id);
 
             order.Events.Add(new PurchaseOrder.OrderEvent
             {
@@ -138,6 +147,18 @@ namespace StateActiveDuty.Web.Controllers
             var filename = $"FLNG_49D_{order.Unit?.Name}_{order.Vendor?.Name}_{order.Date:yyyyMMdd}.pdf";
 
             return File(order.Generate_FLNG_49D(), "application/pdf", filename);
+        }
+
+        private async Task<PurchaseOrder> Get(int id)
+        {
+            return
+                await db
+                .PurchaseOrders
+                .Include(order => order.Unit)
+                .ThenInclude(unit => unit.POC)
+                .Include(order => order.Events)
+                .Where(order => order.Id == id)
+                .SingleOrDefaultAsync();
         }
     }
 }
