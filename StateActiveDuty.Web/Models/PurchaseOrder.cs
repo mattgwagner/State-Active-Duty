@@ -1,6 +1,5 @@
 ﻿using iTextSharp.text.pdf;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,6 +25,8 @@ namespace StateActiveDuty.Web.Models
         public DateTime Date { get; set; } = DateTime.Today;
 
         public String Operation { get; set; } = "17-20 HURRICANE IRMA";
+
+        public PurchaseCategory Category { get; set; } = PurchaseCategory.Meals;
 
         public int UnitId { get; set; }
 
@@ -57,6 +58,19 @@ namespace StateActiveDuty.Web.Models
             public String Username { get; set; }
 
             public String Comments { get; set; }
+        }
+
+        public enum PurchaseCategory : byte
+        {
+            Meals,
+            Lodging,
+            OfficeSupplies,
+            Fuel,
+            Laundry,
+            RentalVehicles,
+            RepairParts,
+            EquipmentRental,
+            Other
         }
 
         public enum OrderPriority : byte
@@ -152,21 +166,24 @@ namespace StateActiveDuty.Web.Models
 
                 form.SetField($"Other", "");
 
-                foreach(DictionaryEntry field in form.Fields)
-                {
-                    var states = form.GetAppearanceStates($"{field.Key}");
-                }
+                //foreach(DictionaryEntry field in form.Fields)
+                //{
+                //    var states = form.GetAppearanceStates($"{field.Key}");
+                //}
 
-                form.SetField("Check Box15", "1");
-                form.SetField("Check Box16", "1");
-                form.SetField("Check Box12", "1");
-                form.SetField("Check Box14", "1");
-                form.SetField("Check Box18", "1");
-                form.SetField("Check Box13", "1");
-                form.SetField("Check Box9", "1");
-                form.SetField("Check Box17", "1");
-                form.SetField("Check Box11", "1");
-                form.SetField("Check Box10", "1");
+                Func<PurchaseCategory, String> To_String = (category) => Category == category ? "Yes" : "Off";
+
+                form.SetField("Check Box9", To_String(PurchaseCategory.Meals)); // Meals
+                form.SetField("Check Box10", To_String(PurchaseCategory.Lodging)); // Lodging
+                form.SetField("Check Box11", To_String(PurchaseCategory.OfficeSupplies)); // Office Supplies
+                form.SetField("Check Box12", To_String(PurchaseCategory.Fuel)); // Fuel
+                form.SetField("Check Box13", To_String(PurchaseCategory.Laundry)); // Laundry
+                form.SetField("Check Box14", To_String(PurchaseCategory.RentalVehicles)); // Rental Vehicles
+                form.SetField("Check Box15", To_String(PurchaseCategory.RepairParts)); // Repair Parts
+                form.SetField("Check Box16", To_String(PurchaseCategory.EquipmentRental)); // Equipment Rental
+                form.SetField("Check Box17", To_String(PurchaseCategory.Other)); // Other (Explain)
+
+                form.SetField("Check Box18", String.IsNullOrWhiteSpace(Justification) ? "Off" : "Yes"); // Purchase of Equipment (Justification)
 
                 stamper.Close();
 
