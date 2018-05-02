@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace StateActiveDuty.Web.Controllers
 {
-    public class PurchaseOrderController : Controller
+    public class PurchaseOrdersController : Controller
     {
         private readonly Database db;
 
-        public PurchaseOrderController(Database db)
+        public PurchaseOrdersController(Database db)
         {
             this.db = db;
         }
