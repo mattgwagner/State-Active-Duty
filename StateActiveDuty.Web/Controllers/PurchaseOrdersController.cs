@@ -57,7 +57,7 @@ namespace StateActiveDuty.Web.Controllers
                 model = await Get(id.Value);
             }
 
-            return View(model);
+            return View("Edit", model);
         }
 
         [HttpPost]
