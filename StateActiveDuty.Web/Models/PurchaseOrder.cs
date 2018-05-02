@@ -1,27 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace StateActiveDuty.Web.Models
 {
     public class PurchaseOrder
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
         public DateTime Date { get; set; } = DateTime.Today;
 
         public virtual Unit Unit { get; set; }
 
-        public virtual Vendor Vendor { get; set; }
+        public OrderVendor Vendor { get; set; } = new OrderVendor { };
 
-        public Status OrderStatus { get; set; } = Status.Created;
+        public OrderStatus Status => Events.OrderByDescending(@event => @event.Timestamp).Select(@event => @event.Status).FirstOrDefault();
 
-        // Who submitted it & when
+        public OrderPriority Priority { get; set; } = OrderPriority.Routine;
 
-        // Who approved it & when
+        public ICollection<PurchaseOrderEvent> Events { get; set; }
 
-        public Priority OrderPriority { get; set; } = Priority.Routine;
+        public class PurchaseOrderEvent
+        {
+            // Events
 
-        public enum Priority : byte
+            // Who submitted it & when
+            // Who approved it & when
+
+            public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
+
+            public OrderStatus Status { get; set; } = OrderStatus.Created;
+
+            public String Username { get; set; }
+
+            public String Comments { get; set; }
+        }
+
+        public enum OrderPriority : byte
         {
             Routine = 0,
 
@@ -30,7 +48,7 @@ namespace StateActiveDuty.Web.Models
             Emergency = 2
         }
 
-        public enum Status : byte
+        public enum OrderStatus : byte
         {
             Created = 0,
 
@@ -46,30 +64,31 @@ namespace StateActiveDuty.Web.Models
 
             Rejected = byte.MaxValue
         }
+
+        [ComplexType]
+        public class OrderVendor
+        {
+            public String Name { get; set; }
+
+            public String PointOfContact { get; set; }
+
+            public String Phone { get; set; }
+
+            public String PointOfContactRole { get; set; }
+
+            public Address PhysicalAddress { get; set; } = new Address { };
+        }
+
+        [ComplexType]
+        public class Address
+        {
+            public String Line1 { get; set; }
+
+            public String City { get; set; }
+
+            public String State { get; set; }
+
+            public String ZipCode { get; set; }
+        }
     }
-
-    public class Vendor
-    {
-        public String Name { get; set; }
-
-        public String PointOfContact { get; set; }
-
-        public String Phone { get; set; }
-
-        public String PointOfContactRole { get; set; }
-
-        public Address PhysicalAddress { get; set; } = new Address { };
-    }
-
-    public class Address
-    {
-        public String Line1 { get; set; }
-
-        public String City { get; set; }
-
-        public String State { get; set; }
-
-        public String ZipCode { get; set; }
-    }
-
 }
