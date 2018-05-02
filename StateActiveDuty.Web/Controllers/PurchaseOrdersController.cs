@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StateActiveDuty.Web.Models;
 using System.Linq;
@@ -38,14 +39,22 @@ namespace StateActiveDuty.Web.Controllers
 
         public async Task<IActionResult> Edit(int? id = null)
         {
-            var model = new PurchaseOrderEditModel
-            {
-                // TODO Load units for select list
-            };
+            ViewBag.Units =
+                await db
+                .Units
+                .OrderBy(unit => unit.Name)
+                .Select(unit => new SelectListItem
+                {
+                    Text = unit.Name,
+                    Value = $"{unit.Id}"
+                })
+                .ToListAsync();
+
+            var model = new PurchaseOrder { };
 
             if (id > 0)
             {
-                model.Order = await Get(id.Value);
+                model = await Get(id.Value);
             }
 
             return View(model);

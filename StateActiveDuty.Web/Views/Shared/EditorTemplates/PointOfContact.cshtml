@@ -1,0 +1,20 @@
+﻿@model PointOfContact
+
+<div>
+    <!-- POC Editor Template -->
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.Name)
+        @Html.EditorFor(model => model.Name)
+    </div>
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.PhoneNumber)
+        @Html.EditorFor(model => model.PhoneNumber)
+    </div>
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.Role)
+        @Html.EditorFor(model => model.Role)
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿@model PurchaseOrder.Address
+
+<div>
+    <!-- Address Editor Template -->
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.Line1)
+        @Html.EditorFor(model => model.Line1)
+    </div>
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.City)
+        @Html.EditorFor(model => model.City)
+    </div>
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.State)
+        @Html.EditorFor(model => model.State)
+    </div>
+
+    <div class="form-group form-group-lg">
+        @Html.DisplayNameFor(model => model.ZipCode)
+        @Html.EditorFor(model => model.ZipCode)
+    </div>
+</div>
