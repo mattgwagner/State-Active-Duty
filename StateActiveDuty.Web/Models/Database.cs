@@ -22,7 +22,16 @@ namespace StateActiveDuty.Web.Models
             builder
                 .Entity<PurchaseOrder>()
                 .OwnsOne(order => order.Vendor)
-                .OwnsOne(order => order.PhysicalAddress);
+                .OwnsOne(vendor => vendor.PhysicalAddress);
+
+            builder
+                .Entity<PurchaseOrder>()
+                .OwnsOne(order => order.Vendor)
+                .OwnsOne(vendor => vendor.RemitToAddress);
+
+            builder
+                .Entity<PurchaseOrder.OrderVendor>()
+                .OwnsOne(vendor => vendor.POC);
         }
 
         public static void Init(Database db)
