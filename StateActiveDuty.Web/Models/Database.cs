@@ -4,6 +4,8 @@ namespace StateActiveDuty.Web.Models
 {
     public class Database : DbContext
     {
+        public virtual DbSet<Unit> Units { get; set; }
+
         public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
@@ -13,6 +15,10 @@ namespace StateActiveDuty.Web.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder
+                .Entity<Unit>()
+                .OwnsOne(unit => unit.POC);
+
             builder
                 .Entity<PurchaseOrder>()
                 .OwnsOne(order => order.Vendor)

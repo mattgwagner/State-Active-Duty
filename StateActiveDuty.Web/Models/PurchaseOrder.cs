@@ -1,5 +1,4 @@
 ﻿using iTextSharp.text.pdf;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,15 +16,21 @@ namespace StateActiveDuty.Web.Models
 
         public DateTime Date { get; set; } = DateTime.Today;
 
+        public int UnitId { get; set; }
+
         public virtual Unit Unit { get; set; }
 
         public OrderVendor Vendor { get; set; } = new OrderVendor { };
 
-        public OrderStatus Status => Events.OrderByDescending(@event => @event.Timestamp).Select(@event => @event.Status).FirstOrDefault();
+        public OrderStatus Status =>
+            Events
+            .OrderByDescending(@event => @event.Timestamp)
+            .Select(@event => @event.Status)
+            .FirstOrDefault();
 
         public OrderPriority Priority { get; set; } = OrderPriority.Routine;
 
-        public ICollection<OrderEvent> Events { get; set; }
+        public virtual ICollection<OrderEvent> Events { get; set; }
 
         public class OrderEvent
         {
@@ -72,28 +77,26 @@ namespace StateActiveDuty.Web.Models
             Rejected = byte.MaxValue
         }
 
-        [Owned]
         public class OrderVendor
         {
             public String Name { get; set; }
 
-            public String PointOfContact { get; set; }
+            public String BusinessPhone { get; set; }
 
-            public String Phone { get; set; }
-
-            public String PointOfContactRole { get; set; }
+            public PointOfContact POC { get; set; } = new PointOfContact { };
 
             public Address PhysicalAddress { get; set; } = new Address { };
+
+            public Address RemitToAddress { get; set; } = new Address { };
         }
 
-        [Owned]
         public class Address
         {
             public String Line1 { get; set; }
 
             public String City { get; set; }
 
-            public String State { get; set; }
+            public String State { get; set; } = "FL";
 
             public String ZipCode { get; set; }
         }
