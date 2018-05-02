@@ -17,8 +17,6 @@ namespace StateActiveDuty.Web.Models
 
         // TODO How to repeat using vendors
 
-        // TODO Track which meal, i.e. breakfast/lunch/dinner
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -27,6 +25,8 @@ namespace StateActiveDuty.Web.Models
         public String Operation { get; set; } = "17-20 HURRICANE IRMA";
 
         public PurchaseCategory Category { get; set; } = PurchaseCategory.Meals;
+
+        public MealCategory Meal { get; set; } = MealCategory.NA;
 
         public int UnitId { get; set; }
 
@@ -73,30 +73,30 @@ namespace StateActiveDuty.Web.Models
             Other
         }
 
+        public enum MealCategory : byte
+        {
+            NA,
+            Breakfast,
+            Lunch,
+            Dinner
+        }
+
         public enum OrderPriority : byte
         {
             Routine = 0,
-
             Priority = 1,
-
             Emergency = 2
         }
 
         public enum OrderStatus : byte
         {
             Created = 0,
-
             Submitted_to_S4 = 1,
-
             Sent_to_SQM = 2,
-
             Requires_Update = 3,
-
             Approved = 10,
-
-            // Completed / Paid?
-
             Rejected = byte.MaxValue
+            // Completed / Paid?
         }
 
         public class OrderVendor
