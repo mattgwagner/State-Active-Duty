@@ -22,6 +22,8 @@ namespace StateActiveDuty.Web.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public String Identifier { get; set; }
+
         public DateTime Date { get; set; } = DateTime.Today;
 
         public String Operation { get; set; } = "17-20 HURRICANE IRMA";

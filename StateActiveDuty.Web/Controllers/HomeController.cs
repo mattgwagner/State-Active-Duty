@@ -14,7 +14,9 @@ namespace StateActiveDuty.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Nothing to do here yet
+
+            return RedirectToAction(nameof(Index), "PurchaseOrders");
         }
 
         public IActionResult Error()
