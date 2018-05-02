@@ -17,6 +17,8 @@ namespace StateActiveDuty.Web.Models
 
         // TODO How to repeat using vendors
 
+        // TODO Store uploaded receipts
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
