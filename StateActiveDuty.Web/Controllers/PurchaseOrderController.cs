@@ -76,7 +76,7 @@ namespace StateActiveDuty.Web.Controllers
         {
             var order = await db.PurchaseOrders.FindAsync(id);
 
-            order.Events.Add(new PurchaseOrder.PurchaseOrderEvent
+            order.Events.Add(new PurchaseOrder.OrderEvent
             {
                 Username = User.Identity.Name,
                 Status = PurchaseOrder.OrderStatus.Submitted_to_S4

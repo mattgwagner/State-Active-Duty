@@ -1,4 +1,5 @@
 ﻿using iTextSharp.text.pdf;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,10 +25,13 @@ namespace StateActiveDuty.Web.Models
 
         public OrderPriority Priority { get; set; } = OrderPriority.Routine;
 
-        public ICollection<PurchaseOrderEvent> Events { get; set; }
+        public ICollection<OrderEvent> Events { get; set; }
 
-        public class PurchaseOrderEvent
+        public class OrderEvent
         {
+            [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            public int Id { get; set; }
+
             // Events
 
             // Who submitted it & when
@@ -68,7 +72,7 @@ namespace StateActiveDuty.Web.Models
             Rejected = byte.MaxValue
         }
 
-        [ComplexType]
+        [Owned]
         public class OrderVendor
         {
             public String Name { get; set; }
@@ -82,7 +86,7 @@ namespace StateActiveDuty.Web.Models
             public Address PhysicalAddress { get; set; } = new Address { };
         }
 
-        [ComplexType]
+        [Owned]
         public class Address
         {
             public String Line1 { get; set; }
