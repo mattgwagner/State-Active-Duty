@@ -88,5 +88,15 @@ namespace StateActiveDuty.Web.Controllers
 
             return RedirectToAction(nameof(Details), new { id, message = "Your PO has been submitted successfully!" });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerateFLNG49D(int id)
+        {
+            var order = await db.PurchaseOrders.FindAsync(id);
+
+            var filename = $"FLNG_49D_{order.Unit}_{order.Vendor?.Name}_{order.Date:yyyyMMdd}.pdf";
+
+            return File(order.Generate_FLNG_49D(), "application/pdf", filename);
+        }
     }
 }
